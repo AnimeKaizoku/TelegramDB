@@ -1,0 +1,1 @@
+DP_NAME_SEPARATOR = '::'
