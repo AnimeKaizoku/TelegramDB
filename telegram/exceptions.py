@@ -21,8 +21,8 @@ class GeneralException(Exception):
         super().__init__(message)
 
 class ReservedCharacter(GeneralException):
-    def __init__(self):
-        super().__init__(f"Reserved Characters: '{DP_NAME_SEPARATOR}' can not be used in the datapack name")
+    def __init__(self, name:str = None):
+        super().__init__(f"Reserved Characters: '{DP_NAME_SEPARATOR}' can not be used in the datapack name: '{name}'")
 
 class InvalidDataPack(GeneralException):
     def __init__(self, message_id: int=None):

@@ -16,11 +16,11 @@
 
 import asyncio, logging
 from os import getenv
-from pyrogram import Client, idle
+from pyrogram import Client, idle, filters
 from pyrogram.types import Message
 from telegram import TelegramDB, DataPack, Member
 
-client = Client("hm", getenv("API_ID"), getenv("API_HASH"))
+client = Client("session_name", getenv("API_ID"), getenv("API_HASH"))
 client.start()
 
 SESSION = TelegramDB(client, getenv("DB_CHAT_ID"), debug=True)
@@ -49,10 +49,34 @@ SESSION.prepare_datapack(User)
 def save_user_data(id: int, name: str, username: str):
     SESSION.commit(User(id, name, username))
 
-@client.on_message()
+@client.on_message(group=1)
 def check_users(_, message: Message):
     if user := message.from_user:
         save_user_data(user.id, user.first_name, user.username)
+
+@client.on_message(filters=filters.command("info", prefixes="."))
+async def get_info(_, message: Message):
+    args = message.text.split()
+    if len(args) > 1:
+        try:
+            user_id = int(args[1])
+        except BaseException:
+            await message.reply("You didn't enter a valid user id!")
+            return
+    else:
+        user_id = message.from_user.id
+    user = User(user_id)
+    if not SESSION.get(user):
+        await message.reply("User not found in the database.")
+        return
+    await message.reply(f"""
+    **User Info**
+
+    **UserID**: `{user.id}`
+    **Name**: `{user.name}`
+    **Username**: `{user.username}`
+    """)
+
 
 def main():
     idle()

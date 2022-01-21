@@ -20,7 +20,7 @@ from ast import literal_eval
 from telethon import TelegramClient
 from pyrogram import Client
 from typing import Union
-from . import DP_NAME_SEPARATOR, __version__
+from .constants import DP_NAME_SEPARATOR, __version__
 from .exceptions import InvalidClient, InvalidDataPack, ReservedCharacter, UnsupportedClient
 
 class Member:
@@ -54,7 +54,7 @@ class DataPack:
         return __dict_to_return
     
     def __query_data__(self):
-        return f"{self.__datapack_name__}: {self.__get_dict__()}"
+        return f"{self.__datapack_name__} - {self.__get_dict__()}"
 
 class TelegramDB:
     """
@@ -118,7 +118,7 @@ class TelegramDB:
             :obj:`None`
         """
         if DP_NAME_SEPARATOR in datapack.__datapack_name__:
-            raise ReservedCharacter()
+            raise ReservedCharacter(datapack.__datapack_name__)
         datapack = self.__fill_datapack(datapack)
         self.__publish_data__(datapack, self.__format_datapack__(datapack))
     
@@ -142,46 +142,70 @@ class TelegramDB:
                     msg_id = client.send_message(chat_id=self.__chat_id__, text=data).message_id
                     self.__commit_success__ = True
                 else:
-                    try:
-                        client.edit_message_text(chat_id=self.__chat_id__, message_id=msg_id, text=data)
-                        self.__commit_success__ = True
-                    except:
+                    self.__get_data_from_cache(datapack)
+                    if self.__format_datapack__(datapack) == data:
                         self.__commit_success__ = False
-                        if self.debug:
-                            self.LOGGER.warning(f"Failed to update: {datapack.__query_data__()}")
+                        self.LOGGER.warning(f"Exact values already stored: {datapack.__query_data__()}")
+                    else:
+                        try:
+                            client.edit_message_text(chat_id=self.__chat_id__, message_id=msg_id, text=data)
+                            self.__commit_success__ = True
+                        except:
+                            self.__commit_success__ = False
+                            if self.debug:
+                                self.LOGGER.warning(f"Failed to update: {datapack.__query_data__()}")
             elif isinstance(client, TelegramClient):
                 if msg_id == 0:
                     msg_id = client.send_message(entity=self.__chat_id__, message=data, parse_mode=None).message_id
                     self.__commit_success__ = True
                 else:
-                    try:
-                        client.edit_message(entity=self.__chat_id__, message=msg_id, text=data, parse_mode=None)
-                        self.__commit_success__ = True
-                    except:
+                    self.__get_data_from_cache(datapack)
+                    if self.__format_datapack__(datapack) == data:
                         self.__commit_success__ = False
-                        if self.debug:
-                            self.LOGGER.warning(f"Failed to update: {datapack.__query_data__()}")
+                        self.LOGGER.warning(f"Exact values already stored: {datapack.__query_data__()}")
+                    else:
+                        try:
+                            client.edit_message(entity=self.__chat_id__, message=msg_id, text=data, parse_mode=None)
+                            self.__commit_success__ = True
+                        except:
+                            self.__commit_success__ = False
+                            if self.debug:
+                                self.LOGGER.warning(f"Failed to update: {datapack.__query_data__()}")
             else:
                 raise InvalidClient()
             if self.debug and self.__commit_success__:
                 self.LOGGER.info(datapack.__query_data__())
             self.__datapacks__[datapack.__datapack_name__] = {"id": msg_id, "data":datapack.__get_dict__()}
     
-    def get(self, datapack: DataPack, primary_member_value=None):
+    def get(self, datapack: DataPack):
         """
         Use this method to get the data from telegram database.
 
         Parameters:
-            datapack (:class:`DataPack`): Subclass of the `DataPack` of the data to be retrieved from telegram database.
-            primary_member_value (:obj:`any`, Optional): Value of the primary key member, if exists.
+            datapack (:obj:`DataPack`): Object of the `DataPack` of the data to be retrieved from telegram database.
 
         Returns:
-            :class:`DataPack`
+            :obj:`bool`
         """
-        if primary_member_value:
-            datapack.__datapack_name__ += DP_NAME_SEPARATOR + str(primary_member_value)
+        return self.__get_data_from_cache(self.__fill_datapack(datapack))
+
+    def __get_data_from_cache(self, datapack: DataPack):
+        """
+        This method fills data in the provided :obj:`DataPack` from the cache.
+
+        Parameters:
+            datapack (:obj:`DataPack`): Object of the `DataPack` of the data to be retrieved from telegram database.
+
+        Returns:
+            :obj:`bool`
+        """
         if datapack.__datapack_name__ in self.__datapacks__:
-            return datapack(**self.__datapacks__[datapack.__datapack_name__]["data"])
+            data = self.__datapacks__[datapack.__datapack_name__]["data"]
+            for attribute in data:
+                setattr(datapack, attribute, data[attribute])
+            return True
+        return False
+
 
     def __format_datapack__(self, datapack: DataPack):
         """

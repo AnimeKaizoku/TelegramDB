@@ -15,3 +15,5 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 DP_NAME_SEPARATOR = '::'
+
+__version__ = "0.0.0"
