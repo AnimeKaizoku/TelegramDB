@@ -4,7 +4,7 @@ A library which uses your telegram account as a database for your projects.
 ## Basic Usage
 ```python
 from pyrogram import Client
-from telegram import TelegramDB, DataPack, Member
+from telegramdb import TelegramDB, DataPack, Member
 
 client = Client("session_name", getenv("API_ID"), getenv("API_HASH"))
 client.start()

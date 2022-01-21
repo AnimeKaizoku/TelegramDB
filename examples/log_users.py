@@ -18,7 +18,7 @@ import asyncio, logging
 from os import getenv
 from pyrogram import Client, idle, filters
 from pyrogram.types import Message
-from telegram import TelegramDB, DataPack, Member
+from telegramdb import TelegramDB, DataPack, Member
 
 client = Client("session_name", getenv("API_ID"), getenv("API_HASH"))
 client.start()
