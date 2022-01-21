@@ -46,13 +46,16 @@ class User(DataPack):
 
 SESSION.prepare_datapack(User)
 
-def save_user_data(id: int, name: str, username: str):
-    SESSION.commit(User(id, name, username))
+INSERTION_LOCK = asyncio.Lock()
+
+async def save_user_data(id: int, name: str, username: str):
+    async with INSERTION_LOCK:
+        SESSION.commit(User(id, name, username))
 
 @client.on_message(group=1)
-def check_users(_, message: Message):
+async def check_users(_, message: Message):
     if user := message.from_user:
-        save_user_data(user.id, user.first_name, user.username)
+        await save_user_data(user.id, user.first_name, user.username)
 
 @client.on_message(filters=filters.command("info", prefixes="."))
 async def get_info(_, message: Message):
@@ -77,10 +80,7 @@ async def get_info(_, message: Message):
     **Username**: `{user.username}`
     """)
 
-
 def main():
     idle()
 
 asyncio.get_event_loop().run_until_complete(main())
-
-

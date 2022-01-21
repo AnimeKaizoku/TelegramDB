@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import inspect
+import inspect, asyncio, nest_asyncio
 from logging import Logger, getLogger
 from ast import literal_eval
 from telethon import TelegramClient
@@ -22,6 +22,8 @@ from pyrogram import Client
 from typing import Union
 from .constants import DP_NAME_SEPARATOR, __version__
 from .exceptions import InvalidClient, InvalidDataPack, ReservedCharacter, UnsupportedClient
+
+nest_asyncio.apply()
 
 class Member:
     """
@@ -68,6 +70,7 @@ class TelegramDB:
     """
     __datapacks__:dict = {str:{"id":int, "data":str}}
     __dp_cache__:dict = {}
+    __publisher_busy__ = False  
     def __init__(self, __telegram_client__: Union[Client, TelegramClient], __chat_id__: Union[int, str]=None, debug: bool=False, LOGGER: Logger=None):
         print(f"""
     TelegramDB v{__version__} Copyright (C) 2022 anonyindian
@@ -89,6 +92,7 @@ class TelegramDB:
                 self.LOGGER = getLogger()
             else:
                 self.LOGGER = LOGGER
+        self.__loop__ = asyncio.get_event_loop()
     
     def prepare_datapack(self, datapack_class: DataPack):
         """
@@ -139,33 +143,42 @@ class TelegramDB:
                 msg_id:int = self.__datapacks__[datapack.__datapack_name__]["id"]
             if isinstance(client, Client):
                 if msg_id == 0:
-                    msg_id = client.send_message(chat_id=self.__chat_id__, text=data).message_id
+                    async def publish():
+                        nonlocal msg_id
+                        msg_id = (await client.send_message(chat_id=self.__chat_id__, text=data)).message_id
+                    self.__loop__.run_until_complete(publish())
                     self.__commit_success__ = True
                 else:
                     self.__get_data_from_cache(datapack)
                     if self.__format_datapack__(datapack) == data:
                         self.__commit_success__ = False
-                        self.LOGGER.warning(f"Exact values already stored: {datapack.__query_data__()}")
+                        if self.debug:
+                            self.LOGGER.warning(f"Exact values already stored: {datapack.__query_data__()}")
                     else:
                         try:
-                            client.edit_message_text(chat_id=self.__chat_id__, message_id=msg_id, text=data)
+                            self.__loop__.run_until_complete(client.edit_message_text(chat_id=self.__chat_id__, message_id=msg_id, text=data))
                             self.__commit_success__ = True
                         except:
                             self.__commit_success__ = False
                             if self.debug:
                                 self.LOGGER.warning(f"Failed to update: {datapack.__query_data__()}")
+                        
             elif isinstance(client, TelegramClient):
                 if msg_id == 0:
-                    msg_id = client.send_message(entity=self.__chat_id__, message=data, parse_mode=None).message_id
+                    async def publish():
+                        nonlocal msg_id
+                        msg_id = (await client.send_message(entity=self.__chat_id__, message=data, parse_mode=None)).id
+                    self.__loop__.run_until_complete(publish())
                     self.__commit_success__ = True
                 else:
                     self.__get_data_from_cache(datapack)
                     if self.__format_datapack__(datapack) == data:
                         self.__commit_success__ = False
-                        self.LOGGER.warning(f"Exact values already stored: {datapack.__query_data__()}")
+                        if self.debug:
+                            self.LOGGER.warning(f"Exact values already stored: {datapack.__query_data__()}")
                     else:
                         try:
-                            client.edit_message(entity=self.__chat_id__, message=msg_id, text=data, parse_mode=None)
+                            self.__loop__.run_until_complete(client.edit_message(entity=self.__chat_id__, message=msg_id, text=data, parse_mode=None))
                             self.__commit_success__ = True
                         except:
                             self.__commit_success__ = False

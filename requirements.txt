@@ -1,3 +1,4 @@
 pyrogram
 telethon
 tgcrypto
+nest_asyncio
