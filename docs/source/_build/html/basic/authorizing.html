@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authorizing &mdash; TelegramDB 0.1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TelegramDB" href="../tgdb/telegramdb.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> TelegramDB
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">First Steps</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Authorizing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#editing-the-code">Editing the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-telegramdb">Creating TelegramDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#authorizin-as-a-bot-account">Authorizin as a Bot Account</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TelegramDB</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tgdb/telegramdb.html">TelegramDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tgdb/datapack.html">DataPack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tgdb/member.html">Member</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TelegramDB</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Authorizing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/basic/authorizing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="authorizing">
+<span id="id1"></span><h1>Authorizing<a class="headerlink" href="#authorizing" title="Permalink to this headline"></a></h1>
+<p>Before working with TelegramDB, you need to create your Telegram Client using
+<a class="reference external" href="https://github.com/pyrogram/pyrogram">Pyrogram</a> or <a class="reference external" href="https://github.com/lonamiwebs/telethon">Telethon</a></p>
+<ul class="simple">
+<li><p>Using Pyrogram</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyrogram</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+    <span class="s2">&quot;my_account&quot;</span><span class="p">,</span>
+    <span class="n">api_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
+    <span class="n">api_hash</span><span class="o">=</span><span class="s2">&quot;0123456789abcdef0123456789abcdef&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Using Telethon</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">telethon.sync</span> <span class="kn">import</span> <span class="n">TelegramClient</span>
+
+<span class="c1"># Use your own values from my.telegram.org</span>
+<span class="n">api_id</span> <span class="o">=</span> <span class="mi">12345</span>
+<span class="n">api_hash</span> <span class="o">=</span> <span class="s1">&#39;0123456789abcdef0123456789abcdef&#39;</span>
+
+<span class="c1"># The first parameter is the .session file name (absolute paths allowed)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">TelegramClient</span><span class="p">(</span><span class="s1">&#39;anon&#39;</span><span class="p">,</span> <span class="n">api_id</span><span class="p">,</span> <span class="n">api_hash</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This API ID and hash is the one used by <em>your application</em>, not your
+phone number. You can use this API ID and hash with <em>any</em> phone number
+or even for bot accounts.</p>
+</div>
+<section id="editing-the-code">
+<h2>Editing the Code<a class="headerlink" href="#editing-the-code" title="Permalink to this headline"></a></h2>
+<p>This is a little introduction for those new to Python programming in general.</p>
+<p>We will write our code inside <code class="docutils literal notranslate"><span class="pre">hello.py</span></code>, so you can use any text
+editor that you like. To run the code, use <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">hello.py</span></code> from
+the terminal.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Don’t call your script <code class="docutils literal notranslate"><span class="pre">telegramdb.py</span></code>! Python will try to import
+the client from there and it will fail with an error such as
+“ImportError: cannot import name ‘TelegramDB’ …”.</p>
+</div>
+</section>
+<section id="creating-telegramdb">
+<h2>Creating TelegramDB<a class="headerlink" href="#creating-telegramdb" title="Permalink to this headline"></a></h2>
+<p>We can finally initialize the telegram database!</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">telegramdb</span> <span class="kn">import</span> <span class="n">TelegramDB</span>
+<span class="kn">from</span> <span class="nn">pyrogram</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+    <span class="s2">&quot;my_account&quot;</span><span class="p">,</span>
+    <span class="n">api_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
+    <span class="n">api_hash</span><span class="o">=</span><span class="s2">&quot;0123456789abcdef0123456789abcdef&quot;</span>
+<span class="p">)</span>
+<span class="n">chat_id</span> <span class="o">=</span> <span class="mi">777000</span>
+<span class="n">SESSION</span> <span class="o">=</span> <span class="n">TelegramDB</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">chat_id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the first line, we import the class name so we can create an instance
+of the client and in the second line we imported the Pyrogram Client. Then, we define variables to store pyrogram client instance.</p>
+<p>At last, we create a new <a class="reference internal" href="../tgdb/telegramdb.html#telegramdb.TelegramDB" title="telegramdb.TelegramDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">telegramdb.TelegramDB</span></code></a>
+instance and call it <code class="docutils literal notranslate"><span class="pre">SESSION</span></code>. We can now use the SESSION
+for anything that we want, such as committing a datapack to storage chat.</p>
+</section>
+<section id="authorizin-as-a-bot-account">
+<h2>Authorizin as a Bot Account<a class="headerlink" href="#authorizin-as-a-bot-account" title="Permalink to this headline"></a></h2>
+<p>Right now you can not use TelegramDB for a bot account due to
+telegram’s limitations but we expect to add their support soon.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tgdb/telegramdb.html" class="btn btn-neutral float-right" title="TelegramDB" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anony.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

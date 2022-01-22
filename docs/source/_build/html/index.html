@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TelegramDB’s documentation! &mdash; TelegramDB 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="basic/installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> TelegramDB
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">First Steps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basic/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic/authorizing.html">Authorizing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic/quick-start.html">Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic/next-steps.html">Next Steps</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tgdb/telegramdb.html">TelegramDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tgdb/datapack.html">DataPack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tgdb/member.html">Member</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">TelegramDB</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>TelegramDB’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="telegramdb-s-documentation">
+<h1>TelegramDB’s documentation!<a class="headerlink" href="#telegramdb-s-documentation" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getenv</span>
+<span class="kn">from</span> <span class="nn">pyrogram</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">telegramdb</span> <span class="kn">import</span> <span class="n">TelegramDB</span><span class="p">,</span> <span class="n">DataPack</span><span class="p">,</span> <span class="n">Member</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;session_name&quot;</span><span class="p">,</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;API_ID&quot;</span><span class="p">),</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;API_HASH&quot;</span><span class="p">))</span>
+<span class="n">client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">SESSION</span> <span class="o">=</span> <span class="n">TelegramDB</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DB_CHAT_ID&quot;</span><span class="p">))</span>
+
+<span class="k">class</span> <span class="nc">TestData</span><span class="p">(</span><span class="n">DataPack</span><span class="p">):</span>
+   <span class="n">__datapack_name__</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
+
+   <span class="nb">id</span> <span class="o">=</span> <span class="n">Member</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">is_primary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span class="n">name</span> <span class="o">=</span> <span class="n">Member</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+
+<span class="n">SESSION</span><span class="o">.</span><span class="n">prepare_datapack</span><span class="p">(</span><span class="n">TestData</span><span class="p">)</span>
+
+<span class="n">test</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span><span class="mi">777000</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Telegram&quot;</span>
+<span class="n">SESSION</span><span class="o">.</span><span class="n">commit</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>TelegramDB is a modern python library which uses your
+telegram account to store database for your projects.</p>
+</section>
+<section id="requirements">
+<h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p>Python version &gt;= 3.8</p></li>
+<li><p>A telegram client (<a class="reference external" href="https://github.com/pyrogram/pyrogram">Pyrogram</a> or <a class="reference external" href="https://github.com/lonamiwebs/telethon">Telethon</a>)</p></li>
+</ul>
+</section>
+<section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline"></a></h1>
+<p>Repository: <a class="reference external" href="https://github.com/AnimeKaizoku/TelegramDB">https://github.com/AnimeKaizoku/TelegramDB</a></p>
+<p>Pull requests are always welcome. For major changes,
+please open an issue first to discuss what you would like to change.</p>
+<p>Please make sure to update examples as appropriate.</p>
+</section>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this headline"></a></h1>
+<img alt="GPL v3" src="https://www.gnu.org/graphics/gplv3-127x51.png" />
+<p>Licensed Under <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License v3</a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic/installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anony.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
