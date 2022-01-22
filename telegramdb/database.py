@@ -19,9 +19,9 @@ from logging import Logger, getLogger
 from ast import literal_eval
 from telethon import TelegramClient
 from pyrogram import Client
-from typing import Union
+from typing import Union, List
 from .constants import DP_NAME_SEPARATOR, __version__
-from .exceptions import InvalidClient, InvalidDataPack, ReservedCharacter, UnsupportedClient
+from .exceptions import InvalidClient, InvalidDataPack, ReservedCharacter
 
 nest_asyncio.apply()
 
@@ -69,8 +69,7 @@ class TelegramDB:
         LOGGER (:class:`logging.Logger`, Optional): Logger which will be used for debugging.
     """
     __datapacks__:dict = {str:{"id":int, "data":str}}
-    __dp_cache__:dict = {}
-    __publisher_busy__ = False  
+    __dp_cache__:dict = {}  
     def __init__(self, __telegram_client__: Union[Client, TelegramClient], __chat_id__: Union[int, str]=None, debug: bool=False, LOGGER: Logger=None):
         print(f"""
     TelegramDB v{__version__} Copyright (C) 2022 anonyindian
@@ -80,6 +79,7 @@ class TelegramDB:
             """)
         self.debug = debug
         self.__telegram_client__ = __telegram_client__
+        self.__loop__ = asyncio.get_event_loop()
 
         if __chat_id__:
             self.__chat_id__ = __chat_id__
@@ -92,7 +92,6 @@ class TelegramDB:
                 self.LOGGER = getLogger()
             else:
                 self.LOGGER = LOGGER
-        self.__loop__ = asyncio.get_event_loop()
     
     def prepare_datapack(self, datapack_class: DataPack):
         """
@@ -219,6 +218,62 @@ class TelegramDB:
             return True
         return False
 
+    def get_all(self):
+        """
+        Use this method to get all data from telegram database.
+
+        Returns:
+            A list containing :class:`DataPack`s
+        """
+        datapacks: List[DataPack] = []
+        for __datapack_name__ in self.__datapacks__:
+            data = self.__datapacks__[__datapack_name__]["data"]
+            obj = DataPack()
+            obj.__datapack_name__ = str(__datapack_name__).split(DP_NAME_SEPARATOR)[0]
+            for key in data:
+                setattr(obj, key, data[key])
+            datapacks.append(obj)
+        return datapacks
+
+    def delete(self, datapack: DataPack):
+        """
+        Use this method to delete data from telegram database.
+
+        Parameters:
+            datapack (:obj:`DataPack`): Object of the `DataPack` of the data to be retrieved from telegram database.
+
+        Returns:
+            :obj:`bool`
+        """
+        datapack = self.__fill_datapack(datapack)
+        if not datapack.__datapack_name__ in self.__datapacks__:
+            return False
+        msg_id = int(self.__datapacks__[datapack.__datapack_name__]["id"])
+        del self.__datapacks__[datapack.__datapack_name__]
+        return self.__unpublish_data__(msg_id)
+
+    def __unpublish_data__(self, msg_id: int):
+        """
+        This method is used to delete message storage of the data from telegram database.
+
+        Parameters:
+            msg_id (:obj:`int`): message id of the stored datapack to be deleted.
+
+        Returns:
+            :obj:`bool`
+        """
+        if client := self.__telegram_client__:
+            if isinstance(client, Client):
+                return self.__loop__.run_until_complete(client.delete_messages(chat_id=self.__chat_id__, message_ids=msg_id))
+            elif isinstance(client, TelegramClient):
+                try:
+                    self.__loop__.run_until_complete(client.delete_messages(entity=self.__chat_id__, message_ids=msg_id))
+                    return True
+                except:
+                    return False
+            else:
+                raise InvalidClient()
+        return False            
 
     def __format_datapack__(self, datapack: DataPack):
         """
@@ -254,7 +309,17 @@ class TelegramDB:
                     raise InvalidDataPack(message.message_id)
                 
         elif isinstance(self.__telegram_client__, TelegramClient):
-            raise UnsupportedClient("telethon")
+            from telethon.tl.types import Message
+            for message in self.__telegram_client__.iter_messages(self.__chat_id__):
+                message: Message = message
+                if not message.message:
+                    continue
+                try:
+                    text = message.message.split("\n", 1)
+                    self.__datapacks__[text[0][1:]] = {"id":message.id, "data":literal_eval(text[1])}
+                except:
+                    raise InvalidDataPack(message.id)
+            # raise UnsupportedClient("telethon")
         else:
             raise InvalidClient()
     
@@ -269,7 +334,16 @@ class TelegramDB:
             chat = self.__telegram_client__.create_channel("Telegram DB")
             self.__chat_id__ = chat.id
         elif isinstance(self.__telegram_client__, TelegramClient):
-            raise UnsupportedClient("telethon")
+            from telethon import functions
+            with self.__telegram_client__ as client:
+                async def make_chat():    
+                    result = await client(functions.channels.CreateChannelRequest(
+                        title='Telegram DB',
+                        about="Channel to store DataPacks",
+                        broadcast=True,
+                    ))
+                    self.__chat_id__ = result.__dict__["chats"][0].__dict__["id"]
+                self.__loop__.run_until_complete(make_chat())
         else:
             raise InvalidClient()
     
