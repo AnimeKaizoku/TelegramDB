@@ -3,6 +3,7 @@ A library which uses your telegram account as a database for your projects.
 
 ## Basic Usage
 ```python
+from os import getenv
 from pyrogram import Client
 from telegramdb import TelegramDB, DataPack, Member
 
