@@ -1,2 +1,6 @@
 sphinx
 sphinx-rtd-theme
+pyrogram
+telethon
+tgcrypto
+nest_asyncio
