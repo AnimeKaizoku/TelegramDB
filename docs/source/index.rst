@@ -54,7 +54,7 @@ telegram account to store database for your projects.
 Requirements
 ============
 
-- Python version >= 3.8
+- Python version >= 3.6
 - A telegram client (`Pyrogram <https://github.com/pyrogram/pyrogram>`_ or `Telethon <https://github.com/lonamiwebs/telethon>`_)
 
 Contributing

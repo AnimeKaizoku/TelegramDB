@@ -59,7 +59,8 @@ use these if possible.
     # this message handler will log users to our database
     @client.on_message(group=1)
     async def check_users(_, message: Message):
-        if user := message.from_user:
+        user = message.from_user
+        if user:
             await save_user_data(user.id, user.first_name, user.username)
 
     # this message handler with command filter will be used to retrieve values from the database

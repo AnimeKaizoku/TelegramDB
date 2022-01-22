@@ -20,7 +20,7 @@ from ast import literal_eval
 from telethon import TelegramClient
 from pyrogram import Client
 from typing import Union, List
-from .constants import DP_NAME_SEPARATOR, __version__
+from .constants import DP_NAME_SEPARATOR, VERSION
 from .exceptions import InvalidClient, InvalidDataPack, ReservedCharacter
 
 nest_asyncio.apply()
@@ -29,8 +29,20 @@ class Member:
     """
     Member of a :class:`DataPack`.
 
-    Attributes:
+    Parameters:
+        _ (:obj:`type`): Datatype of the member. 
         is_primary (:obj:`bool`): Whether the member is a primary key or not.
+
+    Example:
+        .. code-block:: python
+
+            from telegramdb import Member
+            
+            # user_id of type int as a primary key
+            user_id = Member(int, is_primary=True)
+            
+            # text of type str
+            text = Member(str)
     """
     def __init__(self, _:type, is_primary:bool=False):
         self.is_primary = is_primary
@@ -46,6 +58,18 @@ class DataPack:
     Attributes:
         __datapack_name__ (:obj:`str`): Name of the :class:`DataPack`.
 
+    Example:
+        .. code-block:: python
+
+            from telegramdb import DataPack, Member
+            class TestData(DataPack):
+                __datapack_name__ = "test"
+
+                id = Member(int, is_primary=True)
+                name = Member(str)
+
+                def __init__(self, id):
+                    self.id = id
     """
     __datapack_name__:str
 
@@ -62,36 +86,50 @@ class TelegramDB:
     """
     Main object which initialises the telegram database session.
 
-    Attributes:
-        __telegram_client__ (:class:`pyrogram.Client` | :class:`telethon.TelegramClient`): Telegram client which will be used to save database queries on telegram.
-        __chat_id__ (:obj:`int` | :obj:`str`): Unique identifier for the target chat or username of the target channel (in the format ``@channelusername``).
+    Parameters:
+        telegram_client (:class:`pyrogram.Client` | :class:`telethon.TelegramClient`): Telegram client which will be used to save database queries on telegram.
+        chat_id (:obj:`int` | :obj:`str`): Unique identifier for the target chat or username of the target channel (in the format ``@channelusername``).
         debug (:obj:`bool`, Optional): Database queries will be debugged if it is set to ``True``.
-        LOGGER (:class:`logging.Logger`, Optional): Logger which will be used for debugging.
+        logger (:class:`logging.Logger`, Optional): Logger which will be used for debugging.
+    
+    Example:
+        .. code-block:: python
+
+            from telegramdb import TelegramDB
+            from pyrogram import Client
+
+            client = Client(
+                "my_account",
+                api_id=12345,
+                api_hash="0123456789abcdef0123456789abcdef"
+            )
+            chat_id = 777000
+            SESSION = TelegramDB(client, chat_id)
     """
     __datapacks__:dict = {str:{"id":int, "data":str}}
     __dp_cache__:dict = {}  
-    def __init__(self, __telegram_client__: Union[Client, TelegramClient], __chat_id__: Union[int, str]=None, debug: bool=False, LOGGER: Logger=None):
+    def __init__(self, telegram_client: Union[Client, TelegramClient], chat_id: Union[int, str]=None, debug: bool=False, logger: Logger=None):
         print(f"""
-    TelegramDB v{__version__} Copyright (C) 2022 anonyindian
+    TelegramDB v{VERSION} Copyright (C) 2022 anonyindian
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions.
             """)
         self.debug = debug
-        self.__telegram_client__ = __telegram_client__
+        self.__telegram_client__ = telegram_client
         self.__loop__ = asyncio.get_event_loop()
 
-        if __chat_id__:
-            self.__chat_id__ = __chat_id__
+        if chat_id:
+            self.__chat_id__ = chat_id
             self.__get_datapacks__()
         else:
             self.__make_chat__()
 
         if debug:
-            if not LOGGER:
+            if not logger:
                 self.LOGGER = getLogger()
             else:
-                self.LOGGER = LOGGER
+                self.LOGGER = logger
     
     def prepare_datapack(self, datapack_class: DataPack):
         """
@@ -136,7 +174,8 @@ class TelegramDB:
         Returns:
             :obj:`None`
         """
-        if client := self.__telegram_client__:
+        client = self.__telegram_client__
+        if client:
             msg_id = 0
             if datapack.__datapack_name__ in self.__datapacks__:
                 msg_id:int = self.__datapacks__[datapack.__datapack_name__]["id"]
@@ -223,7 +262,7 @@ class TelegramDB:
         Use this method to get all data from telegram database.
 
         Returns:
-            A list containing :class:`DataPack`s
+            A list containing elements of object :class:`DataPack`
         """
         datapacks: List[DataPack] = []
         for __datapack_name__ in self.__datapacks__:
@@ -262,7 +301,8 @@ class TelegramDB:
         Returns:
             :obj:`bool`
         """
-        if client := self.__telegram_client__:
+        client = self.__telegram_client__
+        if client:
             if isinstance(client, Client):
                 return self.__loop__.run_until_complete(client.delete_messages(chat_id=self.__chat_id__, message_ids=msg_id))
             elif isinstance(client, TelegramClient):

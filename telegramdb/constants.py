@@ -16,4 +16,4 @@
 
 DP_NAME_SEPARATOR = '::'
 
-__version__ = "0.1.0"
+VERSION = "0.1.0"

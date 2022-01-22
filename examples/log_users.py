@@ -20,11 +20,14 @@ from pyrogram import Client, idle, filters
 from pyrogram.types import Message
 from telegramdb import TelegramDB, DataPack, Member
 
+# Creating a telegram client
 client = Client("session_name", getenv("API_ID"), getenv("API_HASH"))
 client.start()
 
+# Creating a TelegramDB instance
 SESSION = TelegramDB(client, getenv("DB_CHAT_ID"), debug=True)
 
+# Basic Logging for debugging purpose
 LOG_FORMAT = "-> [TelegramDB Example] [%(levelname)s - %(asctime)s]: %(message)s"
 logging.basicConfig(
     format=LOG_FORMAT,
@@ -32,9 +35,12 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
+# A new datapack class inherited from DataPack 
 class User(DataPack):
+    # naming the datapack 
     __datapack_name__ = "user"
 
+    # here we have defined all the members of this datapack
     id = Member(int, is_primary=True)
     name = Member(str)
     username = Member(str)
@@ -44,19 +50,24 @@ class User(DataPack):
         self.name = name
         self.username = username
 
+# this intialises datapack with its primary keys
 SESSION.prepare_datapack(User)
 
+# insertion lock to avoid duplicate keys 
 INSERTION_LOCK = asyncio.Lock()
 
 async def save_user_data(id: int, name: str, username: str):
     async with INSERTION_LOCK:
         SESSION.commit(User(id, name, username))
 
+# this message handler will log users to our database
 @client.on_message(group=1)
 async def check_users(_, message: Message):
-    if user := message.from_user:
+    user = message.from_user
+    if user:
         await save_user_data(user.id, user.first_name, user.username)
 
+# this message handler with command filter will be used to retrieve values from the database
 @client.on_message(filters=filters.command("info", prefixes="."))
 async def get_info(_, message: Message):
     args = message.text.split()

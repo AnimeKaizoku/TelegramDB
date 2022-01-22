@@ -34,7 +34,7 @@ pip install TelegramDB
 ```
 
 ## Requirements
-- Python 3.8 or higher
+- Python 3.6 or higher
 - A telegram client
 
 ## Contributing

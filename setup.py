@@ -24,5 +24,5 @@ setuptools.setup(
         'Typing :: Typed'
     ],
     install_requires=dependencies,
-    python_requires='>=3.8'
+    python_requires='>=3.6'
 )
