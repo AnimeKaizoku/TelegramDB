@@ -5,7 +5,7 @@ A library which uses your telegram account as a database for your projects.
 
 [![pypi](https://img.shields.io/pypi/v/telegramdb.svg)](https://pypi.org/project/TelegramDB)
 [![pyversion](https://img.shields.io/pypi/pyversions/telegramdb.svg)](https://pypi.org/project/TelegramDB)
-[![downlaods](https://img.shields.io/pypi/dm/TelegramDB)](https://pypistats.org/packages/telegramdb)
+[![downlaods](https://img.shields.io/pypi/dm/telegramdb)](https://pypistats.org/packages/telegramdb)
 [![docs](https://readthedocs.org/projects/telegramdb/badge/?version=stable)](https://telegramdb.readthedocs.io/en/latest/)
 
 ## Basic Usage
