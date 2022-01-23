@@ -1,6 +1,13 @@
 # TelegramDB
 A library which uses your telegram account as a database for your projects.
 
+**Documentation**: [telegramdb.readthedocs.io](https://telegramdb.readthedocs.io/) 
+
+[![pypi](https://img.shields.io/pypi/v/telegramdb.svg)](https://pypi.org/project/TelegramDB)
+[![pyversion](https://img.shields.io/pypi/pyversions/telegramdb.svg)](https://pypi.org/project/TelegramDB)
+[![downlaods](https://img.shields.io/pypi/dm/TelegramDB)](https://pypistats.org/packages/telegramdb)
+[![docs](https://readthedocs.org/projects/telegramdb/badge/?version=stable)](https://telegramdb.readthedocs.io/en/latest/)
+
 ## Basic Usage
 ```python
 from os import getenv
