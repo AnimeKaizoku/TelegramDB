@@ -17,9 +17,7 @@
 import inspect, asyncio, nest_asyncio
 from logging import Logger, getLogger
 from ast import literal_eval
-from telethon import TelegramClient
-from pyrogram import Client
-from typing import Union, List
+from typing import Union, List, Any
 from .constants import DP_NAME_SEPARATOR, VERSION
 from .exceptions import InvalidClient, InvalidDataPack, ReservedCharacter
 
@@ -108,7 +106,7 @@ class TelegramDB:
     """
     __datapacks__:dict = {str:{"id":int, "data":str}}
     __dp_cache__:dict = {}  
-    def __init__(self, telegram_client: Union[Client, TelegramClient], chat_id: Union[int, str]=None, debug: bool=False, logger: Logger=None):
+    def __init__(self, telegram_client: Any, chat_id: Union[int, str]=None, debug: bool=False, logger: Logger=None):
         print(f"""
     TelegramDB v{VERSION} Copyright (C) 2022 anonyindian
     This program comes with ABSOLUTELY NO WARRANTY.
@@ -179,7 +177,7 @@ class TelegramDB:
             msg_id = 0
             if datapack.__datapack_name__ in self.__datapacks__:
                 msg_id:int = self.__datapacks__[datapack.__datapack_name__]["id"]
-            if isinstance(client, Client):
+            if client.__class__.__module__ == 'pyrogram.client':
                 if msg_id == 0:
                     async def publish():
                         nonlocal msg_id
@@ -201,7 +199,7 @@ class TelegramDB:
                             if self.debug:
                                 self.LOGGER.warning(f"Failed to update: {datapack.__query_data__()}")
                         
-            elif isinstance(client, TelegramClient):
+            elif client.__class__.__module__ == 'telethon.client.telegramclient':
                 if msg_id == 0:
                     async def publish():
                         nonlocal msg_id
@@ -303,9 +301,9 @@ class TelegramDB:
         """
         client = self.__telegram_client__
         if client:
-            if isinstance(client, Client):
+            if client.__class__.__module__ == 'pyrogram.client':
                 return self.__loop__.run_until_complete(client.delete_messages(chat_id=self.__chat_id__, message_ids=msg_id))
-            elif isinstance(client, TelegramClient):
+            elif client.__class__.__module__ == 'telethon.client.telegramclient':
                 try:
                     self.__loop__.run_until_complete(client.delete_messages(entity=self.__chat_id__, message_ids=msg_id))
                     return True
@@ -336,7 +334,7 @@ class TelegramDB:
         Returns:
             :obj:`None`
         """
-        if isinstance(self.__telegram_client__, Client):
+        if self.__telegram_client__.__class__.__module__ == 'pyrogram.client':
             from pyrogram.types import Message
             for message in self.__telegram_client__.iter_history(self.__chat_id__):
                 message: Message = message
@@ -348,7 +346,7 @@ class TelegramDB:
                 except:
                     raise InvalidDataPack(message.message_id)
                 
-        elif isinstance(self.__telegram_client__, TelegramClient):
+        elif self.__telegram_client__.__class__.__module__ == 'telethon.client.telegramclient':
             from telethon.tl.types import Message
             for message in self.__telegram_client__.iter_messages(self.__chat_id__):
                 message: Message = message
@@ -370,10 +368,10 @@ class TelegramDB:
         Returns:
             :obj:`None`
         """
-        if isinstance(self.__telegram_client__, Client):
+        if self.__telegram_client__.__class__.__module__ == 'pyrogram.client':
             chat = self.__telegram_client__.create_channel("Telegram DB")
             self.__chat_id__ = chat.id
-        elif isinstance(self.__telegram_client__, TelegramClient):
+        elif self.__telegram_client__.__class__.__module__ == 'telethon.client.telegramclient':
             from telethon import functions
             with self.__telegram_client__ as client:
                 async def make_chat():    
