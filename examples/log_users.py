@@ -1,5 +1,5 @@
 # TelegramDB
-# Copyright (C) 2022
+# Copyright (C) 2023
 # Anony <github.com/anonyindian>
 
 # This program is free software: you can redistribute it and/or modify
