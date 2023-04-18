@@ -1,5 +1,5 @@
 # TelegramDB
-# Copyright (C) 2022
+# Copyright (C) 2023
 # Anony <github.com/anonyindian>
 
 # This program is free software: you can redistribute it and/or modify
@@ -16,4 +16,4 @@
 
 DP_NAME_SEPARATOR = '::'
 
-VERSION = "0.2.0"
+VERSION = "1.0.0"

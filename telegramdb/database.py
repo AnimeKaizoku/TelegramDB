@@ -1,5 +1,5 @@
 # TelegramDB
-# Copyright (C) 2022
+# Copyright (C) 2023
 # Anony <github.com/anonyindian>
 
 # This program is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ class TelegramDB:
     __dp_cache__:dict = {}  
     def __init__(self, telegram_client: Union[Client, TelegramClient], chat_id: Union[int, str]=None, debug: bool=False, logger: Logger=None):
         print(f"""
-    TelegramDB v{VERSION} Copyright (C) 2022 anonyindian
+    TelegramDB v{VERSION} Copyright (C) 2023 anonyindian
     This program comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions.
@@ -183,7 +183,7 @@ class TelegramDB:
                 if msg_id == 0:
                     async def publish():
                         nonlocal msg_id
-                        msg_id = (await client.send_message(chat_id=self.__chat_id__, text=data)).message_id
+                        msg_id = (await client.send_message(chat_id=self.__chat_id__, text=data)).id
                     self.__loop__.run_until_complete(publish())
                     self.__commit_success__ = True
                 else:
@@ -338,7 +338,7 @@ class TelegramDB:
         """
         if isinstance(self.__telegram_client__, Client):
             from pyrogram.types import Message
-            for message in self.__telegram_client__.iter_history(self.__chat_id__):
+            for message in self.__telegram_client__.get_chat_history(self.__chat_id__):
                 message: Message = message
                 if not message.text:
                     continue

@@ -132,3 +132,6 @@ dmypy.json
 
 # Test Files
 tests/
+
+*.session
+*.session-journal

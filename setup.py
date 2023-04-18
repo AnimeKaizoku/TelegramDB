@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='TelegramDB',
-    version='0.2.0',
+    version='1.0.0',
     description='A library that uses your telegram account as a database for your project.',
     long_description=long_description,
     long_description_content_type="text/markdown",
